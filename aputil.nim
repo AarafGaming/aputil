@@ -5,6 +5,9 @@ when defined(posix):
     if getuid() == 0:
         quit("ID 10 T Error: Running as root., 1)
 
+when defined(windows):
+  quit("ID 10 T Error: Team Penguin only", 1)
+
 proc isSafeRelativePath(path: string): bool =
     if path.len == 0 or isAbsolute(path):
         return false
