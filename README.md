@@ -1,6 +1,6 @@
 # aputil
 
-APUtil stands for Application Package Utility. It is used for installing packages, it is offline-first. It asks you before packages get to run commands, you can run aputil info < package-path > to see exactly what it wil do before installing, if needed.
+APUtil stands for Application Package Utility and is an offline-first self-contained user-space package manager.
 
 # Usage
 aputil install < package-path > - Installs a package
