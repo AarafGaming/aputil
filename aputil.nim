@@ -1,5 +1,10 @@
 import std/[os, strutils, osproc]
 
+when defined(posix):
+    import std/posix
+    if getuid() == 0:
+        quit("ID 10 T Error: Running as root., 1)
+
 proc isSafeRelativePath(path: string): bool =
     if path.len == 0 or isAbsolute(path):
         return false
