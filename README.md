@@ -1,6 +1,7 @@
 # aputil
 
-APUtil stands for Application Package Utility and is an offline-first self-contained user-space package manager.
+APUtil stands for Application Package Utility and is an offline-first user-space package manager with both self-contained and dependency required packages.
+Dependency required prevents duplication while self-contained prevents dependency hell (best of both worlds).
 
 # Usage
 aputil install < package-path > - Installs a package
