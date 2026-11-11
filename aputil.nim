@@ -189,6 +189,11 @@ if command == "install":
                             quit("Command failed with exit code: " & $result, 1)
                     else:
                         quit("Installation aborted by user.", 1)
+                
+                elif action == "dependency":
+                    let aputilDirectory = getHomeDir() / ".local" / "opt" / "aputil"
+                    if not dirExists(aputilDirectory / installconfig[i + 1].strip()):
+                        quit("Dependency " & installconfig[i + 1].strip() & " required.")
 
     except OSError as error:
         quit("Installation failed: " & error.msg, 1)
