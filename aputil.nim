@@ -211,6 +211,8 @@ elif command == "uninstall":
 
     let aputilDirectory = getHomeDir() / ".local" / "opt" / "aputil"
     let appName = paramStr(2)
+    if appName == "":
+        quit("Empty name not allowed")
     let appPath = aputilDirectory / appName
     let trackerFile = appPath / "installed_links.txt"
 
