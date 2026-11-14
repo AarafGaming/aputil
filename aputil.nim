@@ -178,7 +178,7 @@ if command == "install":
 
                         # Bot/Y-spam detection: if it takes less than 200ms, it's machine-speed input
                         if duration < 0.2:
-                            quit("🚨 NICE TRY, BOT. Input was way too fast (human speed limit exceeded). Y-spam detected, aborting.", 1)
+                            quit("You are gonna get hacked if you do that", 1)
 
                         if input == "y" or input == "yes":
                             approved = true
