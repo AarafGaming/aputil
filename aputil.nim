@@ -6,7 +6,7 @@ when defined(posix):
         quit("ID 10 T Error: Running as root.", 1)
 
 when defined(windows):
-  quit("ID 10 T Error: Team Penguin only", 1)
+    quit("ID 10 T Error: Team Penguin only", 1)
 
 proc isSafeRelativePath(path: string): bool =
     if path.len == 0 or isAbsolute(path):
@@ -176,7 +176,6 @@ if command == "install":
                         let input = strip(readLine(stdin)).toLowerAscii()
                         let duration = epochTime() - startTime
 
-                        # Bot/Y-spam detection: if it takes less than 200ms, it's machine-speed input
                         if duration < 0.2:
                             quit("You are gonna get hacked if you do that", 1)
 
@@ -198,9 +197,12 @@ if command == "install":
                         quit("Installation aborted by user.", 1)
                 
                 elif action == "dependency":
+                    let depName = installconfig[i + 1].strip()
+                    if not isSafeRelativePath(depName):
+                        quit("Invalid dependency name: " & depName, 1)
                     let aputilDirectory = getHomeDir() / ".local" / "opt" / "aputil"
-                    if not dirExists(aputilDirectory / installconfig[i + 1].strip()):
-                        quit("Dependency " & installconfig[i + 1].strip() & " required.")
+                    if not dirExists(aputilDirectory / depName):
+                        quit("Dependency " & depName & " required.")
 
     except OSError as error:
         quit("Installation failed: " & error.msg, 1)
@@ -239,7 +241,7 @@ elif command == "upgrade":
 
     let packageDirectory = absolutePath(paramStr(2))
     let aputilDirectory = getHomeDir() / ".local" / "opt" / "aputil"
-    let tempRoot = getHomeDir() / ".local" / "temp"
+    let tempRoot = getHomeDir() / ".local" / "temp" / $epochTime()
 
     try:
         setCurrentDir(packageDirectory)
@@ -367,9 +369,8 @@ elif command == "upgrade":
         echo "Successfully upgraded " & appName & "!"
 
     except OSError as error:
-        let stagingAppPath = tempRoot / paramStr(2)
-        if dirExists(stagingAppPath):
-            removeDir(stagingAppPath)
+        if dirExists(tempRoot):
+            removeDir(tempRoot)
         quit("Upgrade failed: " & error.msg, 1)
 
 elif command == "list-packages":
