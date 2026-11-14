@@ -214,9 +214,15 @@ elif command == "uninstall":
         quit("Usage: aputil uninstall <app-name>", 1)
 
     let aputilDirectory = getHomeDir() / ".local" / "opt" / "aputil"
-    let appName = paramStr(2)
-    if appName == "":
-        quit("Empty name not allowed")
+    let appName = paramStr(2).strip()
+    
+    if appName.len == 0:
+        quit("Empty name not allowed", 1)
+
+    for ch in appName:
+        if ch notin {'a'..'z', 'A'..'Z', '0'..'9', '-', '_'}:
+            quit("Invalid app name: use only letters, numbers, - and _", 1)
+
     let appPath = aputilDirectory / appName
     let trackerFile = appPath / "installed_links.txt"
 
@@ -245,7 +251,7 @@ elif command == "upgrade":
 
     let packageDirectory = absolutePath(paramStr(2))
     let aputilDirectory = getHomeDir() / ".local" / "opt" / "aputil"
-    let tempRoot = getHomeDir() / ".local" / "temp" / $epochTime()
+    let tempRoot = getHomeDir() / ".local" / "temp" / $(int(epochTime()))
 
     try:
         setCurrentDir(packageDirectory)
@@ -391,6 +397,9 @@ elif command == "upgrade":
 
 elif command == "list-packages":
     let aputilDirectory = getHomeDir() / ".local" / "opt" / "aputil"
+    if not dirExists(aputilDirectory):
+        echo "No packages installed."
+        quit(0)
     setCurrentDir(aputilDirectory)
     for i in walkDirs("*"):
         echo i
