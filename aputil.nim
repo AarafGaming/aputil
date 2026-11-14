@@ -16,7 +16,7 @@ proc isSafeRelativePath(path: string): bool =
         return false
 
     for part in path.split({'/', '\\'}):
-        if part == "..":
+        if part == ".." or part == ".":
             return false
 
     return true
@@ -157,7 +157,9 @@ if command == "install":
                     createDir(aputilDirectory)
                     echo "Creating symlink " & linkPath & " -> " & executable
                     
-                    if fileExists(linkPath) or dirExists(linkPath) or symlinkExists(linkPath):
+                    if dirExists(linkPath):
+                        removeDir(linkPath)
+                    elif fileExists(linkPath) or symlinkExists(linkPath):
                         removeFile(linkPath)
 
                     createSymlink(executable, linkPath)
@@ -227,7 +229,9 @@ elif command == "uninstall":
             let trimmed = linkName.strip()
             if trimmed.len > 0:
                 let symlinkPath = aputilDirectory / trimmed
-                if fileExists(symlinkPath) or symlinkExists(symlinkPath):
+                if dirExists(symlinkPath):
+                    removeDir(symlinkPath)
+                elif fileExists(symlinkPath) or symlinkExists(symlinkPath):
                     echo "Removing symlink: " & symlinkPath
                     removeFile(symlinkPath)
 
@@ -326,6 +330,10 @@ elif command == "upgrade":
                 if not isSafeRelativePath(relativeExecutable) or linkName.len == 0 or '/' in linkName or '\\' in linkName or linkName.contains(".."):
                     quit("Invalid symlink configuration", 1)
 
+                for ch in linkName:
+                    if ch notin {'a'..'z', 'A'..'Z', '0'..'9', '-', '_'}:
+                        quit("Invalid symlink name: use only letters, numbers, - and _", 1)
+
                 let executableInStaging = stagingAppPath / relativeExecutable
                 if not fileExists(executableInStaging):
                     quit("Executable not found in staged build: " & executableInStaging, 1)
@@ -345,7 +353,9 @@ elif command == "upgrade":
                 let trimmed = oldLink.strip()
                 if trimmed.len > 0:
                     let linkPath = aputilDirectory / trimmed
-                    if fileExists(linkPath) or symlinkExists(linkPath):
+                    if dirExists(linkPath):
+                        removeDir(linkPath)
+                    elif fileExists(linkPath) or symlinkExists(linkPath):
                         removeFile(linkPath)
 
         removeDir(liveAppPath)
@@ -359,13 +369,19 @@ elif command == "upgrade":
             let finalExecutable = liveAppPath / linkInfo.executable
             let linkPath = aputilDirectory / linkInfo.linkName
 
-            if fileExists(linkPath) or dirExists(linkPath) or symlinkExists(linkPath):
+            if dirExists(linkPath):
+                removeDir(linkPath)
+            elif fileExists(linkPath) or symlinkExists(linkPath):
                 removeFile(linkPath)
 
             createSymlink(finalExecutable, linkPath)
             trackerContent.add(linkInfo.linkName & "\n")
 
         writeFile(newTrackerFile, trackerContent)
+        
+        if dirExists(tempRoot):
+            removeDir(tempRoot)
+
         echo "Successfully upgraded " & appName & "!"
 
     except OSError as error:
