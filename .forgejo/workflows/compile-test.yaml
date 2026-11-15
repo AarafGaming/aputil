@@ -8,7 +8,11 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v6
-      - name: Install Nim
-        run: apt-get update && apt-get install -y nim
-      - name: Check aputil
-        run: nim check aputil.nim
+      - name: Install Nim and check aputil
+        run: |
+          apt-get update
+          apt-get install -y xz-utils
+          curl -fsSL https://nim-lang.org/choosenim/init.sh -o /tmp/choosenim-init.sh
+          yes n | sh /tmp/choosenim-init.sh
+          export PATH="$HOME/.nimble/bin:$PATH"
+          nim check aputil.nim
