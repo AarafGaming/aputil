@@ -13,6 +13,6 @@ jobs:
           apt-get update
           apt-get install -y xz-utils
           curl -fsSL https://nim-lang.org/choosenim/init.sh -o /tmp/choosenim-init.sh
-          yes n | sh /tmp/choosenim-init.sh
+          sh /tmp/choosenim-init.sh -y
           export PATH="$HOME/.nimble/bin:$PATH"
           nim check aputil.nim
