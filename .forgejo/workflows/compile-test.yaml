@@ -1,0 +1,12 @@
+on: [push]
+
+jobs:
+  check:
+    runs-on: docker
+    container:
+      image: nim:latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+      - name: Check aputil
+        run: nim check aputil.nim
