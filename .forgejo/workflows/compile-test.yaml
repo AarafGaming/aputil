@@ -4,9 +4,11 @@ jobs:
   check:
     runs-on: docker
     container:
-      image: nim:latest
+      image: node:lts
     steps:
       - name: Check out code
         uses: actions/checkout@v6
+      - name: Install Nim
+        run: apt-get update && apt-get install -y nim
       - name: Check aputil
         run: nim check aputil.nim
