@@ -1,4 +1,4 @@
-import std/[os, strutils, osproc, times, terminal, exitprocs, sequtils]
+import std/[os, strutils, osproc, times, exitprocs, sequtils]
 
 when defined(posix):
     import std/posix
@@ -211,13 +211,14 @@ if command == "install":
                     newLinks.add((relativeExecutable, linkName))
 
                 elif action == "command":
-                    if not isatty(stdin):
-                        quit("Commands need an interactive terminal to confirm", 1)
-
                     var approved = false
                     while true:
                         stdout.write("Run command? [" & argumentLine & "] [y/N]: ")
+                        let startTime = epochTime()
                         let input = strip(readLine(stdin)).toLowerAscii()
+
+                        if epochTime() - startTime < 0.2:
+                            quit("You are gonna get hacked if you do that", 1)
 
                         if input == "y" or input == "yes":
                             approved = true
@@ -414,13 +415,14 @@ elif command == "upgrade":
                     newLinks.add((relativeExecutable, linkName))
 
                 elif action == "command":
-                    if not isatty(stdin):
-                        quit("Commands need an interactive terminal to confirm", 1)
-
                     var approved = false
                     while true:
                         stdout.write("Run command? [" & argumentLine & "] [y/N]: ")
+                        let startTime = epochTime()
                         let input = strip(readLine(stdin)).toLowerAscii()
+
+                        if epochTime() - startTime < 0.2:
+                            quit("You are gonna get hacked if you do that", 1)
 
                         if input == "y" or input == "yes":
                             approved = true
