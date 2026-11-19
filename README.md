@@ -11,3 +11,7 @@ aputil list-packages - Lists packages
 
 # Extra
 You cannot spam yes. You have to approve each command the package runs.
+
+# Security
+Fully user-space, approve each command instead of running automatically, minimal codebase, programs are forced into their app directory
+It sits at the middle in terms of security between rooted package managers (dpkg) and containerized package managers (Flatpak, Snap).
