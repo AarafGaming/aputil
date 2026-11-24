@@ -15,3 +15,6 @@ You cannot spam yes. You have to approve each command the package runs.
 # Security
 Fully user-space, approve each command instead of running automatically, minimal codebase, programs are forced into their app directory during installation but symlinks are outside the apps directory.
 It sits at the middle in terms of security between rooted package managers (dpkg) and containerized package managers (Flatpak, Snap).
+
+# Compilation
+I use `nim c -d:release -d:lto --opt:speed --passC:"-O3 -mtune=generic" aputil.nim` for compilation.
